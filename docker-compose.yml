@@ -1,4 +1,5 @@
-version '3'
+version: '3'
+
 services:
   redis-server:
     image: bitnami/redis:4.0
@@ -13,5 +14,14 @@ services:
       dockerfile: Dockerfile
     ports:
       - 11212:11212
-    command: /usr/local/bin/katsubushi -redis "redis://redis-server:6379/0" -log-level debug -port 11212
+    command: >
+      /opt/katsubushi-server/wait-for-it.sh
+        -h redis-server
+        -p 6379
+        -t 600
+        -- 
+          /katsubushi-server/bin/katsubushi
+            -redis "redis://redis-server:6379/0" 
+            -log-level debug
+            -port 11212
   
