@@ -9,7 +9,7 @@ RUN \
 
 RUN \
   cd /go/src/github.com/kayac/go-katsubushi \
-  && git checkout $KATSUBUSHI_VERSION
+  && git checkout $KATSUBUSHI_VERSION -b $KATSUBUSHI_VERSION
 
 RUN \
   cd /go/src/github.com/kayac/go-katsubushi \
@@ -18,9 +18,7 @@ RUN \
 RUN \
   mkdir -p /go/src/github.com/kayac/go-katsubushi/dist \
   && cd /go/src/github.com/kayac/go-katsubushi/cmd/katsubushi \
-  && go build -o /go/src/github.com/kayac/go-katsubushi/dist/katsubushi \
-  && cd /go/src/github.com/kayac/go-katsubushi/cmd/katsubushi-dump \
-  && go build -o /go/src/github.com/kayac/go-katsubushi/dist/katsubushi-dump
+  && go build -o /go/src/github.com/kayac/go-katsubushi/dist/katsubushi
 
 FROM debian:buster-slim
 
@@ -28,7 +26,6 @@ RUN \
   mkdir -p /opt/katsubushi-server/bin
 
 COPY --from=builder /go/src/github.com/kayac/go-katsubushi/dist/katsubushi /opt/katsubushi-server/bin/katsubushi
-COPY --from=builder /go/src/github.com/kayac/go-katsubushi/dist/katsubushi-dump /opt/katsubushi-server/bin/katsubushi-dump
 COPY ./wait-for-it.sh /opt/katsubushi-server/wait-for-it.sh
 
 RUN \
@@ -37,7 +34,6 @@ RUN \
 RUN \
   chmod +x \
     /opt/katsubushi-server/bin/katsubushi \
-    /opt/katsubushi-server/bin/katsubushi-dump \
     /opt/katsubushi-server/wait-for-it.sh
 
 USER katsubushi
