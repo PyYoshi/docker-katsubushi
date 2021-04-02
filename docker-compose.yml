@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   redis-server:
@@ -7,7 +7,7 @@ services:
       - 6379:6379
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
-  
+
   katsubushi:
     build:
       context: ./
@@ -20,8 +20,7 @@ services:
         -p 6379
         -t 600
         -- 
-          /katsubushi-server/bin/katsubushi
+          /opt/katsubushi-server/bin/katsubushi
             -redis "redis://redis-server:6379/0" 
             -log-level debug
             -port 11212
-  
