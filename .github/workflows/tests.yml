@@ -18,19 +18,19 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull builder image
         run: |
           REPOSITORY=$(echo $GITHUB_REPOSITORY | tr '[A-Z]' '[a-z]')  
-          docker pull docker.pkg.github.com/$REPOSITORY/katsubushi-server:builder || true
+          docker pull ghcr.io/$REPOSITORY/katsubushi-server:builder || true
 
       - name: Pull server image
         run: |
           REPOSITORY=$(echo $GITHUB_REPOSITORY | tr '[A-Z]' '[a-z]')  
-          docker pull docker.pkg.github.com/$REPOSITORY/katsubushi-server:latest || true
+          docker pull ghcr.io/$REPOSITORY/katsubushi-server:latest || true
 
       - name: docker-compose run
         shell: bash
@@ -47,25 +47,25 @@ jobs:
       - name: Build builder image
         run: |
           REPOSITORY=$(echo $GITHUB_REPOSITORY | tr '[A-Z]' '[a-z]') 
-          docker build . --target builder -t katsubushi-server:builder --cache-from=docker.pkg.github.com/$REPOSITORY/katsubushi-server:builder
+          docker build . --target builder -t katsubushi-server:builder --cache-from=ghcr.io/$REPOSITORY/katsubushi-server:builder
 
       - name: Push builder image
         if: ${{ github.ref == 'refs/heads/master' }}
         run: |
           REPOSITORY=$(echo $GITHUB_REPOSITORY | tr '[A-Z]' '[a-z]')  
-          docker tag katsubushi-server:builder docker.pkg.github.com/$REPOSITORY/katsubushi-server:builder
-          docker push docker.pkg.github.com/$REPOSITORY/katsubushi-server:builder
+          docker tag katsubushi-server:builder ghcr.io/$REPOSITORY/katsubushi-server:builder
+          docker push ghcr.io/$REPOSITORY/katsubushi-server:builder
 
       - name: Build server image
         run: |
           REPOSITORY=$(echo $GITHUB_REPOSITORY | tr '[A-Z]' '[a-z]')  
-          docker build . -t katsubushi-server:latest --cache-from=docker.pkg.github.com/$REPOSITORY/katsubushi-server:builder --cache-from=docker.pkg.github.com/$REPOSITORY/katsubushi-server:latest
+          docker build . -t katsubushi-server:latest --cache-from=ghcr.io/$REPOSITORY/katsubushi-server:builder --cache-from=ghcr.io/$REPOSITORY/katsubushi-server:latest
 
       - name: Push server image
         if: ${{ github.ref == 'refs/heads/master' }}
         run: |
           REPOSITORY=$(echo $GITHUB_REPOSITORY | tr '[A-Z]' '[a-z]')  
-          docker tag katsubushi-server:latest docker.pkg.github.com/$REPOSITORY/katsubushi-server:latest
-          docker tag katsubushi-server:latest docker.pkg.github.com/$REPOSITORY/katsubushi-server:$GITHUB_SHA
-          docker push docker.pkg.github.com/$REPOSITORY/katsubushi-server:latest
-          docker push docker.pkg.github.com/$REPOSITORY/katsubushi-server:$GITHUB_SHA
+          docker tag katsubushi-server:latest ghcr.io/$REPOSITORY/katsubushi-server:latest
+          docker tag katsubushi-server:latest ghcr.io/$REPOSITORY/katsubushi-server:$GITHUB_SHA
+          docker push ghcr.io/$REPOSITORY/katsubushi-server:latest
+          docker push ghcr.io/$REPOSITORY/katsubushi-server:$GITHUB_SHA
