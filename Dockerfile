@@ -1,4 +1,4 @@
-FROM golang:1.16.3-buster AS builder
+FROM golang:1.17beta1-buster AS builder
 
 ENV KATSUBUSHI_VERSION=v1.6.0
 
